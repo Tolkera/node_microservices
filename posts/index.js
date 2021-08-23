@@ -12,13 +12,14 @@ app.get('/posts', (req, res) => {
     res.send(posts)
 })
 
-app.post('/posts', async(req, res) => {
+app.post('/posts/create', async(req, res) => {
     const id = randomBytes(4).toString('hex');
     const title = req.body.title;
     posts[id] = {
         id, title
     }
-    await axios.post("http://localhost:4005/events", {
+    console.log('POST CREATED, SENDING TO EVENT BUS',)
+    await axios.post("http://eventbus-srv:4005/events", {
         type: 'PostCreated',
         data: {id, title}
     })
@@ -31,5 +32,6 @@ app.post('/events', (req, res) => {
 })
 
 app.listen(4000, ()=>{
+    console.log('v50');
     console.log('listening on 4000')
 })

@@ -9,14 +9,23 @@ const events = [];
 app.post('/events', async(req, res) => {
     const event = req.body;
     events.push(event);
-    let ports = ["4000", "4001", "4002", "4003"];
+    console.log(event);
+    let ports = [
+        "http://posts-clusterip-srv:4000/events",
+        "http://query-srv:4002/events",
+        "http://comments-srv:4001/events",
+        "http://moderation-srv:4003/events"
+
+    ];
     ports.forEach((port) => {
-        axios.post(`http://localhost:${port}/events`, event);
+        console.log('sending to', port)
+        axios.post(port, event);
     })
     res.send({status: 'OK'})
 })
 
 app.get('/events', (req, res) => {
+    console.log('getting events', events);
     res.send(events);
 })
 
